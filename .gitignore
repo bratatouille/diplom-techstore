@@ -38,3 +38,6 @@ Thumbs.db
 dist/
 build/
 .cache/
+# Keep compiled Tailwind output for deployments
+!theme/static/css/dist/
+!theme/static/css/dist/styles.css
