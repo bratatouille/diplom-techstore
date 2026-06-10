@@ -1,0 +1,168 @@
+<header class="bg-white dark:bg-[#28303F] shadow-md h-20 sticky top-0 z-50">
+    <div class="container mx-auto px-4 h-full flex items-center justify-between">
+        <!-- Лого -->
+        <a href="/" class="flex items-center gap-2">
+            <span class="text-2xl font-bold text-gray-900 dark:text-white tracking-tight">TechStore</span>
+        </a>
+        <!-- Навигация -->
+        <nav class="hidden lg:flex gap-8 text-lg font-medium">
+            <a href="{% url 'core:computer_catalog' %}" class="text-gray-900 dark:text-white hover:text-[#7a85ff] transition-colors">Компьютеры</a>
+            <a href="{% url 'pcbuilder:pcbuilder' %}" class="text-gray-900 dark:text-white hover:text-[#7a85ff] transition-colors">Конфигуратор</a>
+            <a href="{% url 'store:catalog' %}" class="text-gray-900 dark:text-white hover:text-[#7a85ff] transition-colors">Каталог</a>
+            <a href="{% url 'core:about' %}" class="text-gray-900 dark:text-white hover:text-[#7a85ff] transition-colors">О нас</a>
+            <a href="{% url 'core:support' %}" class="text-gray-900 dark:text-white hover:text-[#7a85ff] transition-colors">Поддержка</a>
+            {% if user.is_authenticated and user.is_seller %}
+            <a href="{% url 'users:seller_dashboard' %}" class="text-gray-900 dark:text-white hover:text-[#7a85ff] transition-colors">Кабинет продавца</a>
+            {% endif %}
+        </nav>
+        <!-- Поиск -->
+        <div class="mx-3 lg:mx-5 md:flex relative flex-none" style="width: 260px;">
+            <form action="{% url 'store:search' %}" method="get" class="w-full">
+                <input 
+                    type="text" 
+                    name="q" 
+                    id="search-input"
+                    placeholder="Поиск товаров..." 
+                    class="w-full pl-5 pr-3 py-2 rounded-lg border border-gray-200 dark:border-gray-600 bg-white dark:bg-[#1a2230] text-sm text-black dark:text-white focus:outline-none focus:ring-2 focus:ring-[#7a85ff] focus:border-transparent transition-all duration-200"
+                    style="padding-left: 18px;"
+                >
+            </form>
+            <!-- Dropdown результатов -->
+            <div id="search-dropdown" class="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-[#28303F] border border-gray-200 dark:border-gray-600 rounded-2xl shadow-2xl max-h-96 overflow-y-auto z-50 hidden">
+            </div>
+        </div>
+        <!-- Иконки -->
+        <div class="flex items-center gap-4">
+            <button id="theme-toggle" class="text-gray-900 dark:text-white">
+                <!-- Иконка солнца -->
+                <svg class="h-7 w-7 sun-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                <!-- Иконка луны -->
+                <svg class="h-7 w-7 moon-icon hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+            </button>
+            {% if user.is_authenticated %}
+            <!-- Избранное -->
+            <a href="{% url 'favorites:favorites' %}" class="text-gray-900 dark:text-white " title="Избранное">
+                <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+            </a>
+            <!-- Корзина -->
+            <a href="{% url 'cart:cart' %}" class="text-gray-900 dark:text-white " title="Корзина">
+                <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+            </a>
+            {% endif %}
+            <!-- Профиль/Вход -->
+             {% if user.is_authenticated %}
+            <a href="{% url 'users:profile' %}" class="text-gray-900 dark:text-white " title="Профиль">
+                {% else %}
+                <a href="{% url 'users:login' %}" class="text-gray-900 dark:text-white " title="Войти">
+                {% endif %}
+                <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+            </a>
+            <button id="mobile-menu-button" class="lg:hidden text-gray-900 dark:text-white">
+                <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+    </div>
+    <!-- Мобильная адаптация -->
+    <div id="mobile-menu" class="hidden lg:hidden bg-white dark:bg-[#28303F] py-4 w-full border-t border-gray-200 dark:border-gray-700 absolute top-20 left-0 z-40 shadow-md">
+        <nav class="flex flex-col items-center gap-4 text-lg font-medium">
+            <a href="{% url 'core:computer_catalog' %}" class="text-gray-900 dark:text-white ">Компьютеры</a>
+            <a href="{% url 'pcbuilder:pcbuilder' %}" class="text-gray-900 dark:text-white">Конфигуратор</a>
+            <a href="{% url 'store:catalog' %}" class="text-gray-900 dark:text-white ">Каталог</a>
+            <a href="{% url 'core:about' %}" class="text-gray-900 dark:text-white ">О нас</a>
+            <a href="{% url 'core:support' %}" class="text-gray-900 dark:text-white ">Поддержка</a>
+            {% if user.is_authenticated and user.is_seller %}
+            <a href="{% url 'users:seller_dashboard' %}" class="text-gray-900 dark:text-white ">Кабинет продавца</a>
+            {% endif %}
+        </nav>
+    </div>
+</header>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener('click', () => {
+                mobileMenu.classList.toggle('hidden');
+            });
+        }
+
+        // Поиск autocomplete
+        const searchInput = document.getElementById('search-input');
+        const searchDropdown = document.getElementById('search-dropdown');
+        let searchTimeout;
+
+        if (searchInput && searchDropdown) {
+            searchInput.addEventListener('input', () => {
+                const q = searchInput.value.trim();
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(() => {
+                    if (q.length >= 2) {
+                        fetch(`/catalog/api/search/?q=${encodeURIComponent(q)}`, {
+                            headers: {
+                                'X-Requested-With': 'XMLHttpRequest',
+                            }
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            let html = '';
+                            if (data.products && data.products.length > 0) {
+                                data.products.forEach(product => {
+                                    const img = product.image ? `<img src="${product.image}" alt="${product.name}" class="w-12 h-12 object-cover rounded-lg mr-3">` : '';
+                                    html += `
+                                        <a href="/catalog/${product.product_line_slug}/${product.category_slug}/${product.slug}/" class="flex items-center p-4 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors border-b border-gray-100 dark:border-gray-700 last:border-b-0">
+                                            ${img}
+                                            <div>
+                                                <div class="font-semibold text-gray-900 dark:text-white">${product.name}</div>
+                                                <div class="text-sm text-gray-500 dark:text-gray-400">${product.formatted_price}</div>
+                                            </div>
+                                        </a>
+                                    `;
+                                });
+                                const searchUrl = '/catalog/search/?q=' + encodeURIComponent(q);
+                                html += `<div class="p-4 text-center border-t border-gray-100 dark:border-gray-700"><a href="${searchUrl}" class="text-[#7a85ff] hover:underline font-medium">Показать все результаты</a></div>`;
+                            } else {
+                                html = '<div class="p-4 text-gray-500 dark:text-gray-400 text-center">Ничего не найдено</div>';
+                            }
+                            searchDropdown.innerHTML = html;
+                            searchDropdown.classList.remove('hidden');
+                        }).catch(error => {
+                            console.error('Autocomplete error:', error);
+                            searchDropdown.innerHTML = '<div class="p-4 text-gray-500 text-center">Ошибка поиска</div>';
+                            searchDropdown.classList.remove('hidden');
+                        });
+                    } else {
+                        searchDropdown.classList.add('hidden');
+                    }
+                }, 300);
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!searchInput.closest('.relative').contains(e.target)) {
+                    searchDropdown.classList.add('hidden');
+                }
+            });
+
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    searchInput.form.submit();
+                }
+            });
+        }
+    });
+</script>
