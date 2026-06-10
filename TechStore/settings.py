@@ -101,7 +101,7 @@ DATABASES = {
 
 STATIC_URL = '/static/'
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATICFILES_DIRS = [BASE_DIR / "static", BASE_DIR / "theme" / "static"]
+STATICFILES_DIRS = [BASE_DIR / "static", BASE_DIR / "theme" / "static", BASE_DIR / "theme" / "static" / "css" / "dist"]
 NPM_BIN_PATH = "C:/Program Files/nodejs/npm.cmd"
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
